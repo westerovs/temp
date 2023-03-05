@@ -36,7 +36,6 @@ export default class Scratch {
   init() {
     // this.#createInnerCover()
     this.#createCoverWrap()
-
     // window.addEventListener('resize', () => {
     //   this.clearRect()
     //   this.coverWrap = this.game.make.bitmapData(this.coverSprite.width, this.coverSprite.height)
@@ -51,17 +50,16 @@ export default class Scratch {
   }
   
   destroy() {
+    console.log('Scratch Destroy')
     this.coverSprite.alive = false
+    this.clearRect()
     this.coverWrap.destroy()
   }
   
   update() {
+    if (!this.coverSprite.alive) return
     if (this.game.input.activePointer.isDown) {
-      
-      if (!this.coverSprite.alive) return
-      console.log(234)
       this.#onTouchStart()
-      // this.#checkWin()
     }
   }
   

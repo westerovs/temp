@@ -50,6 +50,7 @@ export default class Controller {
     this.scratch.update()
   }
   
+  // test
   render = () => {
     this.scratch?.render()
   }
@@ -70,7 +71,7 @@ export default class Controller {
   
   findCriminal = (value) => {
     if (value <= 10) {
-      this.scratch.clearRect()
+      this.scratch.destroy()
     }
   }
   
