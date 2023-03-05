@@ -5,9 +5,10 @@
 * */
 
 export default class CollisionOver {
-  constructor(game, hero) {
+  constructor({game, hero, isDebug}) {
     this.game = game
     this.hero = hero
+    this.isDebug = isDebug
     
     this.dotsArr = []
     this.maxLengthDotsArr = null
@@ -19,34 +20,17 @@ export default class CollisionOver {
   }
   
   init = () => {
-    // this.game.app.stage.interactive = true
-    // this.game.app.stage.hitArea = this.game.app.screen
-
     this.#createDots()
-    // this.game.canvas.addEventListener('pointerdown', this.#handlePointerDown)
-    // this.game.canvas.addEventListener('pointerdown', this.#handlePointerUp)
   }
-  
-  update = () => {
-    // if (!this._pointerData) return
-  
-    // this.#handlePointerDown()
-    // if (this._pointerData) {
-    //   const target = this.game.app.renderer.plugins.interaction.hitTest(this._pointerData.global)
-    //   if (this.dotsArr.includes(target)) {
-    //     this.#handlePointerOver({target})
-    //   }
-    // }
-  }
-  
+
   #createDots = () => {
     const heroBack = this.hero
 
     const size = 35
-    const offset = 5
+    const offset = 0
     
     for (let row = 0; row <= 2; row++) {
-      for (let col = 0; col < 9; col++) {
+      for (let col = 0; col < 11; col++) {
         // пропускаю пустые части на персонаже
         if (row === 0) {
           if (col === 0 || col > 3) continue
@@ -57,6 +41,7 @@ export default class CollisionOver {
 
         const dot = this.#createDot(heroBack, (size + offset) * row, (size + offset) * col, size)
         dot.inputEnabled = true
+        dot.alpha = this.isDebug ? 1 : 0
         this.dotsArr.push(dot)
         
         dot.events.onInputOver.add(() => this.#handlePointerOver(dot))
@@ -79,16 +64,6 @@ export default class CollisionOver {
     return dot
   }
   
-  // #handlePointerDown = (e) => {
-  //   return
-  //   this._pointerData = e.data
-  //   console.log(this._pointerData)
-  // }
-  
-  // #handlePointerUp = () => {
-  //   this._pointerData = null
-  // }
-
   #handlePointerOver = dot => {
     const target = dot
     target.visible = false
@@ -100,6 +75,5 @@ export default class CollisionOver {
   
   checkCleared = (remainsDotsLength) => {
     this.game.Signals.isCollisionOver.dispatch(remainsDotsLength)
-    // this.game.emit('checkHero', remainsDotsLength)
   }
 }

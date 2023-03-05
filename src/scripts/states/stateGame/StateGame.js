@@ -55,6 +55,10 @@ export default class GameState extends Phaser.State {
     this.controller?.update()
   }
   
+  render() {
+    this.controller.render()
+  }
+  
   #createBg() {
     this.game.LAYERS.BACKGROUNDS.create(0, 0, 'bg')
   }
