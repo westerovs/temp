@@ -1,5 +1,5 @@
 /* eslint-disable */
-import Container from './Container.js'
+import Controller from './Controller.js'
 import UI from '../../components/UI.js'
 import getFactor from "../../utils/factor.js"
 import resize from "../../utils/resize.js"
@@ -15,7 +15,7 @@ export default class GameState extends Phaser.State {
     this.factor = null
 
     // components
-    this.container = null
+    this.controller = null
     this.ui = null
   }
   
@@ -51,6 +51,10 @@ export default class GameState extends Phaser.State {
     this.ui.updateUiLayer(width, height, factor, landscape)
   }
   
+  update() {
+    this.controller?.update()
+  }
+  
   #createBg() {
     this.game.LAYERS.BACKGROUNDS.create(0, 0, 'bg')
   }
@@ -61,11 +65,12 @@ export default class GameState extends Phaser.State {
   
   #initSignals() {
     this.game.Signals.onResizeSignal = new Phaser.Signal()
+    this.game.Signals.isCollisionOver = new Phaser.Signal()
   }
   
   // entry point
   #createGame() {
-    this.container = new Container(this.game, this._cfg)
-    this.container.startGame()
+    this.controller = new Controller(this.game, this._cfg)
+    this.controller.startGame()
   }
 }

@@ -46,7 +46,7 @@ export default class Scratch {
     if (!this.coverSprite.alive) return
     
     this.#onTouchStart()
-    this.#checkWin()
+    // this.#checkWin()
   }
   
   #onTouchStart = () => {

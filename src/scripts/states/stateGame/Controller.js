@@ -1,22 +1,49 @@
 /* eslint-disable */
-import Controller from '../../components/Controller.js'
 import { tweenSetAlpha } from '../../utils/tweens.js'
 import {callNextState} from '../../utils/utils.js'
+import Scratch from '../../components/modules/Scratch.js'
+import CollisionOver from '../../components/modules/CollisionOver.js'
 
-export default class Container {
+export default class Controller {
   constructor(game, cfg) {
     this.game = game
+    this.layers = this.game.LAYERS
     this._cfg = cfg
     
     this.sprites = this.game.sprites
+    this.bookcaseGroup = this.game.add.group()
   }
   
   startGame = () => {
     this.#initSignals()
+  
+    this.createHero()
     
-    // init
-    this.controller = new Controller(this.game, this.game.state)
-    this.controller.init()
+    this.createCollisionOver()
+    this.createScratch()
+  }
+  
+  createHero = () => {
+    this.hero = this.game.make.image(200, 200, 'heroSmall')
+    this.layers.GAME.add(this.hero)
+  }
+  
+  createCollisionOver = () => {
+    this.collisionOver = new CollisionOver(this.game, this.hero)
+  }
+  
+  createScratch = () => {
+    this.bookcase = new Scratch({
+      game: this.game,
+      cover: 'bookcase',
+      x: 500, y: 500,
+      MIN_ALPHA_RATIO: 0.20,
+    })
+  }
+  
+  update = () => {
+    this.bookcase.update()
+    this.collisionOver?.update()
   }
   
   restartingGame = () => {
@@ -40,5 +67,6 @@ export default class Container {
   #initSignals = () => {
     this.game.Signals.winGame = new Phaser.Signal()
     this.game.Signals.winGame.add(() => this.#endGame())
+    this.game.Signals.isCollisionOver.add((data) => console.log(data))
   }
 }
