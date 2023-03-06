@@ -46,6 +46,6 @@ export default class Hero1 {
   
   update = () => {
     this.scratchBookCase.update()
-    this.scratchBookChair.update()
+    // this.scratchBookChair.update()
   }
 }

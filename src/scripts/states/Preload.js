@@ -36,7 +36,10 @@ export default class Preload extends Phaser.State {
     this.load.image('leftHand', './src/assets/images/characters/parts/left-hand.png')
     this.load.image('pocket', './src/assets/images/characters/parts/pocket.png')
     this.load.image('rightHand', './src/assets/images/characters/parts/right-hand.png')
-    this.load.image('hat', './src/assets/images/characters/parts/top-hat.png')
+    this.load.image('hat', './src/assets/images/characters/parts/hat.png')
+    
+    this.load.image('block1', './src/assets/images/block1.png')
+    this.load.image('block2', './src/assets/images/block2.png')
     
     this.load.image('brush', './src/assets/images/brush.png')
   }

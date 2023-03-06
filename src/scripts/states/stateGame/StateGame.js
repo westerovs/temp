@@ -13,7 +13,7 @@ export default class GameState extends Phaser.State {
     this.sprites = {}
     this.Signals = {}
     this.factor = null
-
+    
     // components
     this.controller = null
     this.ui = null
@@ -21,43 +21,40 @@ export default class GameState extends Phaser.State {
   
   create(game) {
     this.game = game
+    window._game = game
     this.game.camera.fadeIn()
-
     this.game._cfg = this._cfg
-
+    
     this.game.sprites = this.sprites
     this.game.Signals = this.Signals
-
+    this.game.resize = this.resize
+    
     this.game.LAYERS = {
-      BACKGROUNDS    : this.game.add.group(),
-      GAME  : this.game.add.group(),
+      BACKGROUNDS: this.game.add.group(),
+      GAME: this.game.add.group(),
       UI: this.game.add.group(),
     }
-
+    
     this.#initSignals()
     this.#createBg()
     this.#createUi()
-    this.#createGame()
+    this.#createController()
     this.resize()
   }
   
-  resize() {
+  resize = () => {
     console.log('resize')
     const {width, height, factor, landscape} = resize(this.game.LAYERS.BACKGROUNDS, getFactor(this.game), this.game)
     this.game.Signals.onResizeSignal.dispatch(landscape)
     this.factor = factor
     this.game.factor = this.factor
-
+    
     this.ui.updateUiLayer(width, height, factor, landscape)
   }
   
   update() {
     this.controller?.update()
   }
-  
-  // render() {
-  //   this.controller.render()
-  // }
   
   #createBg() {
     this.game.LAYERS.BACKGROUNDS.create(0, 0, 'bg')
@@ -73,7 +70,7 @@ export default class GameState extends Phaser.State {
   }
   
   // entry point
-  #createGame() {
+  #createController() {
     this.controller = new Controller(this.game, this._cfg)
     this.controller.startGame()
   }

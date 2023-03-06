@@ -15,17 +15,18 @@ export default class Controller {
     // components
     this.hero1 = new Hero1(this.game)
     this.hero2 = new Hero2(this.game)
-    
   }
   
   startGame = () => {
     this.#initSignals()
-    this.hero1.init()
+    // this.hero1.init()
+    this.hero2.init()
   }
   
   
   update = () => {
-    this.hero1.update()
+    // this.hero1?.update()
+    this.hero2?.update()
   }
   
   
@@ -45,10 +46,10 @@ export default class Controller {
   
   findCriminalFirst = (value) => {
     if (value <= 1) {
-      this.hero1.scratchBookCase.destroy()
       tweenSetAlpha(this.game, this.hero1.hero, 0)
-      this.hero2.init()
+      this.hero1.scratchBookCase.destroy()
       
+      this.hero2.init()
     }
   }
   

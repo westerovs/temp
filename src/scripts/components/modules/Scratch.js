@@ -30,8 +30,6 @@ export default class Scratch {
     this.coverSprite = null
     this.differentBetweenWidthOrHeight = 0
   
-    this.radius = 25
-    this.moveDot = new Phaser.Circle(0, 0, 55)
     this.init()
 }
   
@@ -46,57 +44,50 @@ export default class Scratch {
     //   this.coverWrap.draw(this.coverSprite)
     //   this.coverWrap.update()
     //
-    //
-    //   this.scratchCover()
+    //   this.draw()
     // })
   }
   
-  destroy() {
-    console.log('Scratch Destroy')
+  destroy = () => {
+    console.warn('Scratch Destroy')
     this.finish = true
-    console.log('update', this.coverSprite.alive)
     
     this.clearRect()
     this.coverWrap.destroy()
   }
   
-  update() {
+  update = () => {
     if (this.finish) return
     if (this.game.input.activePointer.isDown) {
+      
+      console.log('SCRATCH: ', this.cover, this.getAlphaRatio())
+      
       this.#onTouchStart()
-  
       if (this.checkIsWin) this.#checkWin()
     }
   }
   
   #onTouchStart = () => {
     if (this.game.input.activePointer.isDown) {
-      this.scratchCover()
+      this.draw()
     }
   }
   
-  scratchCover = () => {
+  draw = () => {
     this.superX = ((this.game.input.worldX / this.game.factor) - this.x)
     this.superY = ((this.game.input.worldY / this.game.factor) - this.y)
     const rgba  = this.coverWrap.getPixel(this.superX, this.superY)
-  
+
     if (rgba.a > 0) {
-      // this.coverWrap.update() // ?
+      this.coverWrap.update() // ?
     
       this.coverWrap.blendDestinationOut()
-      // this.coverWrap.circle(this.superX, this.superY, this.radius, 'red')
+      // this.coverWrap.circle(this.superX, this.superY, 25, 'red')
       this.coverWrap.draw('brush', this.superX - 80, this.superY - 50)
       
-      // this.coverWrap.blendReset() // ?
-      // this.coverWrap.dirty = true // ?
+      this.coverWrap.blendReset() // ?
+      this.coverWrap.dirty = true // ?
     }
-  }
-  
-  // for debug
-  render() {
-    this.moveDot.x = this.game.input.worldX
-    this.moveDot.y = this.game.input.worldY
-    this.game.debug.geom(this.moveDot,'blue');
   }
   
   #createInnerCover = () => {
@@ -110,7 +101,7 @@ export default class Scratch {
   
     this.coverWrap = this.game.make.bitmapData(this.coverSprite.width, this.coverSprite.height)
     this.coverWrap.addToWorld(this.x, this.y)
-
+    
     this.coverWrap.draw(this.coverSprite)
     this.coverWrap.update()
   }
@@ -131,12 +122,12 @@ export default class Scratch {
       if (data[i] > 0) alphaPixels++
     }
     
-    return alphaPixels / (ctx.canvas.width * ctx.canvas.height)
+    return +(alphaPixels / (ctx.canvas.width * ctx.canvas.height)).toFixed(2)
   }
   
   #checkWin = () => {
     const alphaRatio = this.getAlphaRatio()
-  
+    
     if (!this.finish && alphaRatio < this.MIN_ALPHA_RATIO) {
       this.finish = true
       this.clearRect()
