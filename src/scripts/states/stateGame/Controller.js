@@ -2,6 +2,7 @@
 import { tweenSetAlpha } from '../../utils/tweens.js'
 import {callNextState} from '../../utils/utils.js'
 import Hero1 from '../../components/Hero1.js'
+import Hero2 from '../../components/Hero2.js'
 
 export default class Controller {
   constructor(game, cfg) {
@@ -13,6 +14,7 @@ export default class Controller {
   
     // components
     this.hero1 = new Hero1(this.game)
+    this.hero2 = new Hero2(this.game)
     
   }
   
@@ -44,6 +46,9 @@ export default class Controller {
   findCriminalFirst = (value) => {
     if (value <= 1) {
       this.hero1.scratchBookCase.destroy()
+      tweenSetAlpha(this.game, this.hero1.hero, 0)
+      this.hero2.init()
+      
     }
   }
   

@@ -53,13 +53,15 @@ export default class Scratch {
   
   destroy() {
     console.log('Scratch Destroy')
-    this.coverSprite.alive = false
+    this.finish = true
+    console.log('update', this.coverSprite.alive)
+    
     this.clearRect()
     this.coverWrap.destroy()
   }
   
   update() {
-    if (!this.coverSprite.alive) return
+    if (this.finish) return
     if (this.game.input.activePointer.isDown) {
       this.#onTouchStart()
   
@@ -135,10 +137,6 @@ export default class Scratch {
   #checkWin = () => {
     const alphaRatio = this.getAlphaRatio()
   
-    console.log(' ------------------ ')
-    console.log(alphaRatio)
-    console.log(this.MIN_ALPHA_RATIO)
-    console.log(' ------------------ ')
     if (!this.finish && alphaRatio < this.MIN_ALPHA_RATIO) {
       this.finish = true
       this.clearRect()
