@@ -25,7 +25,21 @@ export default class Preload extends Phaser.State {
   
     // hero
     this.load.image('heroSmall', './src/assets/images/characters/hero-small.png')
+    // hero 2
+    this.load.image('body', './src/assets/images/characters/parts/body.png')
+    this.load.image('faceAngry', './src/assets/images/characters/parts/face-angry.png')
+    this.load.image('faceSad', './src/assets/images/characters/parts/face-sad.png')
+    this.load.image('faceShock', './src/assets/images/characters/parts/face-shock.png')
     
+    this.load.image('gun', './src/assets/images/characters/parts/gun.png')
+    this.load.image('handOffGun', './src/assets/images/characters/parts/hand-off-gun.png')
+    this.load.image('handsArrested', './src/assets/images/characters/parts/hands-arrested.png')
+    this.load.image('leftHand', './src/assets/images/characters/parts/left-hand.png')
+    this.load.image('pocket', './src/assets/images/characters/parts/pocket.png')
+    this.load.image('rightHand', './src/assets/images/characters/parts/right-hand.png')
+    this.load.image('topHat', './src/assets/images/characters/parts/top-hat.png')
+    
+    this.load.image('brush', './src/assets/images/brush.png')
   }
   
   create() {

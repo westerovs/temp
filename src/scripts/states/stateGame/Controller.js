@@ -1,8 +1,7 @@
 /* eslint-disable */
 import { tweenSetAlpha } from '../../utils/tweens.js'
 import {callNextState} from '../../utils/utils.js'
-import Scratch from '../../components/modules/Scratch.js'
-import CollisionOver from '../../components/modules/CollisionOver.js'
+import Hero1 from '../../components/Hero1.js'
 
 export default class Controller {
   constructor(game, cfg) {
@@ -12,48 +11,21 @@ export default class Controller {
     
     this.sprites = this.game.sprites
   
-    this.collisionOver = null
-    this.scratch = null
+    // components
+    this.hero1 = new Hero1(this.game)
+    
   }
   
   startGame = () => {
     this.#initSignals()
-  
-    this.createHero()
-    
-    this.createCollisionOver()
-    this.createScratch()
+    this.hero1.init()
   }
   
-  createHero = () => {
-    this.hero = this.game.make.image(520, 570, 'heroSmall')
-    this.layers.GAME.add(this.hero)
-  }
-  
-  createCollisionOver = () => {
-    this.collisionOver = new CollisionOver({
-      game: this.game, hero: this.hero, isDebug: true,
-    })
-  }
-  
-  createScratch = () => {
-    this.scratch = new Scratch({
-      game: this.game,
-      cover: 'bookcase',
-      x: 450, y: 420,
-      MIN_ALPHA_RATIO: 0.20,
-    })
-  
-  }
   
   update = () => {
-    this.scratch.update()
+    this.hero1.update()
   }
   
-  // test
-  render = () => {
-    this.scratch?.render()
-  }
   
   #endGame = () => {
     console.warn('GAME WIN! VICTORY!')
@@ -69,15 +41,15 @@ export default class Controller {
     callNextState(this.game, this.game.constants.States.FINAL)
   }
   
-  findCriminal = (value) => {
-    if (value <= 10) {
-      this.scratch.destroy()
+  findCriminalFirst = (value) => {
+    if (value <= 1) {
+      this.hero1.scratchBookCase.destroy()
     }
   }
   
   #initSignals = () => {
     this.game.Signals.winGame = new Phaser.Signal()
     this.game.Signals.winGame.add(() => this.#endGame())
-    this.game.Signals.isCollisionOver.add((value) => this.findCriminal(value))
+    this.game.Signals.isCollisionOver.add((value) => this.findCriminalFirst(value))
   }
 }

@@ -26,20 +26,14 @@ export default class CollisionOver {
   #createDots = () => {
     const heroBack = this.hero
 
-    const size = 35
-    const offset = 0
+    const w = 140
+    const h = 70
+    const offset = 1
     
-    for (let row = 0; row <= 2; row++) {
-      for (let col = 0; col < 11; col++) {
-        // пропускаю пустые части на персонаже
-        if (row === 0) {
-          if (col === 0 || col > 3) continue
-        }
-        if (row === 2) {
-          if (col === 0) continue
-        }
+    for (let row = 0; row <= 0; row++) {
+      for (let col = 0; col < 5; col++) {
 
-        const dot = this.#createDot(heroBack, (size + offset) * row, (size + offset) * col, size)
+        const dot = this.#createDot(heroBack, (w + offset) * row, (h + offset) * col, w, h)
         dot.inputEnabled = true
         dot.alpha = this.isDebug ? 1 : 0
         this.dotsArr.push(dot)
@@ -52,11 +46,11 @@ export default class CollisionOver {
     console.log('hero maxParts: ', this.maxLengthDotsArr)
   }
   
-  #createDot = (container, x = 0, y = 0, size = 40, color = 0x00FFA9) => {
+  #createDot = (container, x = 0, y = 0, w, h, color = 0x00FFA9) => {
     const dot = this.game.make.graphics(0, 0)
     dot.beginFill(color)
-    dot.fillAlpha = 0.5
-    dot.drawRect(x, y, size, size)
+    dot.fillAlpha = 0.2
+    dot.drawRect(x, y, w, h)
     dot.endFill()
   
     container.addChild(dot)

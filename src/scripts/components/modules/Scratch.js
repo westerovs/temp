@@ -8,6 +8,7 @@ export default class Scratch {
     y,
     MIN_ALPHA_RATIO = 0.5,
     stopFinal = false,
+    isWin
   }) {
     this.game           = game
     this.innerSpriteKey = innerSpriteKey
@@ -18,6 +19,7 @@ export default class Scratch {
     this.innerCover     = null
     this.coverWrap      = null
     this.game.factor = 1
+    this.checkIsWin = isWin
     
     this.MIN_ALPHA_RATIO = MIN_ALPHA_RATIO
     // stopFinal: передать true, если нужно что бы не вызывалось событие win, например если хотите вторым слоем подсветку сделать
@@ -35,6 +37,7 @@ export default class Scratch {
   
   init() {
     // this.#createInnerCover()
+    
     this.#createCoverWrap()
     // window.addEventListener('resize', () => {
     //   this.clearRect()
@@ -46,7 +49,6 @@ export default class Scratch {
     //
     //   this.scratchCover()
     // })
-
   }
   
   destroy() {
@@ -60,6 +62,8 @@ export default class Scratch {
     if (!this.coverSprite.alive) return
     if (this.game.input.activePointer.isDown) {
       this.#onTouchStart()
+  
+      if (this.checkIsWin) this.#checkWin()
     }
   }
   
@@ -78,7 +82,9 @@ export default class Scratch {
       // this.coverWrap.update() // ?
     
       this.coverWrap.blendDestinationOut()
-      this.coverWrap.circle(this.superX, this.superY, this.radius, 'red')
+      // this.coverWrap.circle(this.superX, this.superY, this.radius, 'red')
+      this.coverWrap.draw('brush', this.superX - 80, this.superY - 50)
+      
       // this.coverWrap.blendReset() // ?
       // this.coverWrap.dirty = true // ?
     }
@@ -128,15 +134,17 @@ export default class Scratch {
   
   #checkWin = () => {
     const alphaRatio = this.getAlphaRatio()
-    
+  
+    console.log(' ------------------ ')
+    console.log(alphaRatio)
+    console.log(this.MIN_ALPHA_RATIO)
+    console.log(' ------------------ ')
     if (!this.finish && alphaRatio < this.MIN_ALPHA_RATIO) {
       this.finish = true
       this.clearRect()
       this.destroy()
-  
-      if (this.stopFinal) return
-      // эта часть опциональна, если хотите посылать сигнал, о том, что всё очищено ↓
-      // this.game.isFinalGame.dispatch('xxx')
+      
+
     }
   }
 }
