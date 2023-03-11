@@ -6,8 +6,33 @@ export default class Hero1 {
     this.game = game
     this.layers = this.game.LAYERS
   
-    this.collisionOver = null
+    this.Positions = {
+      bookCase: {
+        landscape: {
+          x: 450,
+          y: 420,
+        },
+        portrait: {
+          x: 450,
+          y: 420,
+        },
+      },
+      chair: {
+        landscape: {
+          x: 840,
+          y: 890,
+        },
+        portrait: {
+          x: 840,
+          y: 890,
+        },
+      },
+    }
     this.scratchBookCase = null
+    this.scratchBookChair = null
+  
+    // components
+    this.collisionOver = null
   }
   
   init = () => {
@@ -23,29 +48,28 @@ export default class Hero1 {
   
   createCollisionOver = () => {
     this.collisionOver = new CollisionOver({
-      game: this.game, hero: this.hero, isDebug: false,
+      game: this.game, hero: this.hero, isDebug: true,
     })
   }
   
   createScratch = () => {
     this.scratchBookCase = new Scratch({
       game: this.game,
-      cover: 'bookcase',
-      x: 450, y: 420,
-      MIN_ALPHA_RATIO: 0.20,
+      key: 'bookcase',
+      minAlphaRatio: null,
+      spritePos: this.Positions.bookCase,
     })
     
     this.scratchBookChair = new Scratch({
       game: this.game,
-      cover: 'chair',
-      x: 840, y: 890,
-      MIN_ALPHA_RATIO: 0.25,
-      isWin: true,
+      key: 'chair',
+      minAlphaRatio: 0.003,
+      spritePos: this.Positions.chair
     })
   }
   
   update = () => {
-    this.scratchBookCase.update()
-    // this.scratchBookChair.update()
+    this.scratchBookCase?.update()
+    this.scratchBookChair?.update()
   }
 }

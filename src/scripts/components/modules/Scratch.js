@@ -1,120 +1,96 @@
-export default class Scratch {
+export default class ScratchBlock {
   constructor({
     game,
-    innerSpriteKey,
-    cover,
-    coverAtlas,
-    x,
-    y,
-    MIN_ALPHA_RATIO = 0.5,
-    stopFinal = false,
-    isWin
+    key,
+    minAlphaRatio = 0.5,
+    spritePos,
   }) {
-    this.game           = game
-    this.innerSpriteKey = innerSpriteKey
-    this.cover          = cover
-    this.coverAtlas     = coverAtlas
-    this.x              = x
-    this.y              = y
-    this.innerCover     = null
-    this.coverWrap      = null
-    this.game.factor = 1
-    this.checkIsWin = isWin
+    this.game = game
+    this.key = key
+    this.minAlphaRatio = minAlphaRatio
     
-    this.MIN_ALPHA_RATIO = MIN_ALPHA_RATIO
-    // stopFinal: передать true, если нужно что бы не вызывалось событие win, например если хотите вторым слоем подсветку сделать
-    this.stopFinal       = stopFinal
-    this.finish          = false
+    this.sprite = this.game.make.image(0, 0, key)
+    this.spritePos = spritePos
+    this.bitmapData = null
+    this.disabled = false
     
-    // верхний спрайт, который нужно стирать
-    this.coverSprite = null
-    this.differentBetweenWidthOrHeight = 0
-  
     this.init()
-}
+  }
   
   init() {
-    // this.#createInnerCover()
+    this.bitmapData = this.game.make.bitmapData(1000, 1000)
+    this.bitmapData.addToWorld(0, 0)
+    // this.bitmapData.fill(0, 0, 0, 0.2)
     
-    this.#createCoverWrap()
-    // window.addEventListener('resize', () => {
-    //   this.clearRect()
-    //   this.coverWrap = this.game.make.bitmapData(this.coverSprite.width, this.coverSprite.height)
-    //   this.coverWrap.addToWorld(Math.random() * 1000, this.y)
-    //   this.coverWrap.draw(this.coverSprite)
-    //   this.coverWrap.update()
-    //
-    //   this.draw()
-    // })
+    this.#createBlock()
+    window.addEventListener('resize', () => this.#resize())
+    console.log(`${this.key} MAX_PIXELS:`, this.#getAlphaRatio())
   }
   
-  destroy = () => {
-    console.warn('Scratch Destroy')
-    this.finish = true
-    
-    this.clearRect()
-    this.coverWrap.destroy()
-  }
-  
-  update = () => {
-    if (this.finish) return
+  update() {
+    if (this.disabled) return
     if (this.game.input.activePointer.isDown) {
+      this.sprite.alpha = 0
+      console.log(`${this.key} MAX_PIXELS:`, this.#getAlphaRatio())
       
-      console.log('SCRATCH: ', this.cover, this.getAlphaRatio())
-      
-      this.#onTouchStart()
-      if (this.checkIsWin) this.#checkWin()
+      this.#drawBlend()
+      this.#checkWin()
     }
-  }
-  
-  #onTouchStart = () => {
-    if (this.game.input.activePointer.isDown) {
-      this.draw()
-    }
-  }
-  
-  draw = () => {
-    this.superX = ((this.game.input.worldX / this.game.factor) - this.x)
-    this.superY = ((this.game.input.worldY / this.game.factor) - this.y)
-    const rgba  = this.coverWrap.getPixel(this.superX, this.superY)
-
-    if (rgba.a > 0) {
-      this.coverWrap.update() // ?
     
-      this.coverWrap.blendDestinationOut()
-      // this.coverWrap.circle(this.superX, this.superY, 25, 'red')
-      this.coverWrap.draw('brush', this.superX - 80, this.superY - 50)
-      
-      this.coverWrap.blendReset() // ?
-      this.coverWrap.dirty = true // ?
+    if (this.game.input.activePointer.isUp) {
+      if (this.#getAlphaRatio() > this.minAlphaRatio) {
+        this.sprite.alpha = 1
+        
+        this.bitmapData.draw(this.sprite, this.sprite.x, this.sprite.y)
+      }
     }
   }
   
-  #createInnerCover = () => {
-    if (!this.innerSpriteKey) return
-    this.innerCover = this.game.add.image(this.x, this.y, `${ this.cover }`)
+  recoveryBlock = () => {
+    this.sprite.alpha = 1
+    this.bitmapData.draw(this.sprite, this.sprite.x, this.sprite.y)
   }
   
-  #createCoverWrap = () => {
-    this.coverSprite = this.game.make.sprite(0, 0, `${ this.cover }`)
-    // this.coverSprite.alpha = 0.1
-  
-    this.coverWrap = this.game.make.bitmapData(this.coverSprite.width, this.coverSprite.height)
-    this.coverWrap.addToWorld(this.x, this.y)
+  #createBlock = () => {
+    if (window.matchMedia('(orientation: portrait)').matches) {
+      this.sprite.position.set(this.spritePos.portrait.x, this.spritePos.portrait.y)
+    }
     
-    this.coverWrap.draw(this.coverSprite)
-    this.coverWrap.update()
+    if (window.matchMedia('(orientation: landscape)').matches) {
+      this.sprite.position.set(this.spritePos.landscape.x, this.spritePos.landscape.y)
+    }
+    
+    this.bitmapData.draw(this.sprite)
+    
+    this.sprite.alpha = 0
+    this.sprite.inputEnabled = true
+    this.sprite.events.onInputOver.add(() => {
+      this.game.scratchSignal.dispatch(this.sprite.key, this)
+    })
   }
   
-  clearRect = () => {
-    this.coverWrap.context.clearRect(0, 0, this.coverSprite.width, this.coverSprite.height)
+  #drawBlend = () => {
+    const cursorX = this.game.input.worldX / this.game.factor
+    const cursorY = this.game.input.worldY / this.game.factor
+    // const rgba  = this.bitmapData.getPixel(cursorX, cursorY)
+    
+    // if (rgba.a > 0) {
+    this.bitmapData.blendDestinationOut()
+    // this.bitmapData.circle(cursorX, cursorY, 25, 'blue')
+    this.bitmapData.draw('brush', cursorX - 80, cursorY - 50)
+    this.bitmapData.blendReset()
+    this.bitmapData.dirty = true
+    // }
   }
   
-  getAlphaRatio = () => {
-    const {ctx}     = this.coverWrap
+  #getAlphaRatio = () => {
+    const {ctx} = this.bitmapData
     let alphaPixels = 0
     
-    const {data} = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height)
+    const {data} = ctx.getImageData(
+      this.sprite.x, this.sprite.y,
+      this.sprite.width, this.sprite.height,
+    )
     
     // чем выше число, тем быстрее происходит полная очистка
     const coefficientBrush = 4
@@ -122,18 +98,57 @@ export default class Scratch {
       if (data[i] > 0) alphaPixels++
     }
     
-    return +(alphaPixels / (ctx.canvas.width * ctx.canvas.height)).toFixed(2)
+    return +(alphaPixels / (ctx.canvas.width * ctx.canvas.height)).toFixed(3)
   }
   
   #checkWin = () => {
-    const alphaRatio = this.getAlphaRatio()
-    
-    if (!this.finish && alphaRatio < this.MIN_ALPHA_RATIO) {
-      this.finish = true
-      this.clearRect()
+    if (this.minAlphaRatio === null) return
+    if (this.#getAlphaRatio() < this.minAlphaRatio) {
+      console.warn('WIN')
       this.destroy()
-      
-
     }
+  }
+  
+  destroy = () => {
+    this.disabled = true
+    this.sprite.inputEnabled = false
+    this.bitmapData.context.clearRect(this.sprite.x, this.sprite.y, this.sprite.width, this.sprite.height)
+  }
+  
+  #getImageURL = (imgData, width, height) => {
+    const newCanvas = document.createElement('canvas')
+    const ctx = newCanvas.getContext('2d')
+    newCanvas.width = width
+    newCanvas.height = height
+    
+    ctx.putImageData(imgData, 0, 0)
+    return newCanvas.toDataURL() //image URL
+  }
+  
+  #createCopyImage = (x, y, width, height) => {
+    const imageData = this.bitmapData.ctx.getImageData(x, y, this.sprite.width, this.sprite.height)
+    
+    const copyImage = new Image()
+    copyImage.src = this.#getImageURL(imageData, width, height)
+    
+    return new Promise(resolve => {
+      copyImage.addEventListener('load', () => resolve(copyImage))
+    })
+  }
+  
+  #resize = () => {
+    this.#createCopyImage(this.sprite.x, this.sprite.y, this.sprite.width, this.sprite.height)
+      .then((copyCropImage) => {
+        this.bitmapData.context.clearRect(this.sprite.x, this.sprite.y, this.sprite.width, this.sprite.height)
+        
+        if (window.matchMedia('(orientation: portrait)').matches) {
+          this.sprite.position.set(this.spritePos.portrait.x, this.spritePos.portrait.y)
+        }
+        if (window.matchMedia('(orientation: landscape)').matches) {
+          this.sprite.position.set(this.spritePos.landscape.x, this.spritePos.landscape.y)
+        }
+        
+        this.bitmapData.draw(copyCropImage, this.sprite.x, this.sprite.y)
+      })
   }
 }
