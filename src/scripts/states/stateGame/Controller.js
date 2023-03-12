@@ -1,8 +1,8 @@
 /* eslint-disable */
 import { tweenSetAlpha } from '../../utils/tweens.js'
 import {callNextState} from '../../utils/utils.js'
-import Hero1 from '../../components/Hero1.js'
-import Hero2 from '../../components/Hero2.js'
+import Level1 from '../../components/Level1.js'
+import Level2 from '../../components/Level2.js'
 
 export default class Controller {
   constructor(game, cfg) {
@@ -13,18 +13,19 @@ export default class Controller {
     this.sprites = this.game.sprites
   
     // components
-    this.hero1 = new Hero1(this.game)
-    // this.hero2 = new Hero2(this.game)
+    this.level1 = new Level1(this.game)
+    this.level2 = new Level2(this.game)
   }
   
   startGame = () => {
     this.#initSignals()
-    this.hero1.init()
+    this.level1.init()
+    // this.level2.init()
   }
   
   update = () => {
-    this.hero1?.update()
-    // this.hero2?.update()
+    this.level1?.update()
+    this.level2?.update()
   }
   
   #endGame = () => {
@@ -43,12 +44,12 @@ export default class Controller {
   
   findCriminalFirst = (value) => {
     console.log(value)
-    if (value <= 1) {
-      tweenSetAlpha(this.game, this.hero1.hero, 0)
-      this.hero1.scratchBookCase.destroy()
-      
-      // this.hero2.init()
-    }
+    // if (value <= 1) {
+    //   tweenSetAlpha(this.game, this.level1.hero, 0)
+    //   this.level1.scratchBookCase.destroy()
+    //
+    //   // this.level2.init()
+    // }
   }
   
   #initSignals = () => {

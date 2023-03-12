@@ -60,3 +60,21 @@ canvas {
   overflow: hidden !important;
 }
 
+.vignette {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0;
+  transition: 0.5s opacity;
+}
+
+@media (max-width: 768px) {
+  html,
+  body {
+    font-size: 5px;
+  }
+}

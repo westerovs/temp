@@ -81,6 +81,7 @@ export default class ScratchBlock {
     this.bitmapData.blendDestinationOut()
     // this.bitmapData.circle(cursorX, cursorY, 25, 'blue')
     this.bitmapData.draw('brush', cursorX - 80, cursorY - 50)
+    
     this.bitmapData.blendReset()
     this.bitmapData.dirty = true
     // }

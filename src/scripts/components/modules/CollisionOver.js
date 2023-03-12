@@ -70,4 +70,5 @@ export default class CollisionOver {
   checkCleared = (remainsDotsLength) => {
     this.game.Signals.isCollisionOver.dispatch(remainsDotsLength)
   }
+  
 }
