@@ -10,6 +10,8 @@ export default class ScratchBlock {
     this.minAlphaRatio = minAlphaRatio
     
     this.sprite = this.game.make.image(0, 0, key)
+
+    this.shadow = this.game.add.image(spritePos.shadow.x, spritePos.shadow.y, key + 'Shadow')
     this.spritePos = spritePos
     this.bitmapData = null
     this.disabled = false
@@ -18,7 +20,7 @@ export default class ScratchBlock {
   }
   
   init() {
-    this.bitmapData = this.game.make.bitmapData(1000, 1000)
+    this.bitmapData = this.game.make.bitmapData(1366, 1366)
     this.bitmapData.addToWorld(0, 0)
     // this.bitmapData.fill(0, 0, 0, 0.2)
     
@@ -55,12 +57,13 @@ export default class ScratchBlock {
     if (window.matchMedia('(orientation: portrait)').matches) {
       this.sprite.position.set(this.spritePos.portrait.x, this.spritePos.portrait.y)
     }
-    
+  
     if (window.matchMedia('(orientation: landscape)').matches) {
       this.sprite.position.set(this.spritePos.landscape.x, this.spritePos.landscape.y)
     }
-    
+  
     this.bitmapData.draw(this.sprite)
+    this.shadow.position.set(this.sprite.x + this.spritePos.shadow.x, this.sprite.y  + this.spritePos.shadow.y)
     
     this.sprite.alpha = 0
     this.sprite.inputEnabled = true
@@ -147,7 +150,8 @@ export default class ScratchBlock {
         if (window.matchMedia('(orientation: landscape)').matches) {
           this.sprite.position.set(this.spritePos.landscape.x, this.spritePos.landscape.y)
         }
-        
+  
+        this.shadow.position.set(this.sprite.x + this.spritePos.shadow.x, this.sprite.y  + this.spritePos.shadow.y)
         this.bitmapData.draw(copyCropImage, this.sprite.x, this.sprite.y)
       })
   }

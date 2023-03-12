@@ -9,13 +9,17 @@ export default class Hero1 {
     this.Positions = {
       bookCase: {
         landscape: {
-          x: 450,
-          y: 420,
+          x: 360,
+          y: 400,
         },
         portrait: {
           x: 450,
           y: 420,
         },
+        shadow: {
+          x: -155,
+          y: 438,
+        }
       },
       chair: {
         landscape: {
@@ -26,6 +30,10 @@ export default class Hero1 {
           x: 840,
           y: 890,
         },
+        shadow: {
+          x: -84,
+          y: 72,
+        }
       },
     }
     this.scratchBookCase = null
